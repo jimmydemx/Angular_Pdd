@@ -1,5 +1,1 @@
-<ul class='app-topbar'>
-  <li class="app-topbar-list" *ngFor="let item of tabs let i=index">
-    <a [class.active]="i===SelectedItem" (click)="onClickItem(i)" href="#">{{item.item}}</a>
-  </li>
-</ul>
+<app-scrollable-tab [tabs]='tabs' (tabSelected)="onSelectTab($event)"></app-scrollable-tab>

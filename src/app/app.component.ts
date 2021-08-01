@@ -1,10 +1,7 @@
 import { Component } from '@angular/core';
+import { Tabs } from './components';
 
-interface Tabs{
-  item:string,
-  link: string
 
-}
 
 @Component({
   selector: 'app-root',
@@ -57,10 +54,12 @@ export class AppComponent {
   /* 
      functions
   */
-  onClickItem(index:number){
-    this.SelectedItem=index
+ onSelectTab(topMenu: Tabs){
+    console.log(topMenu)
+  
 
-  }
+
+ }
 
 
 }

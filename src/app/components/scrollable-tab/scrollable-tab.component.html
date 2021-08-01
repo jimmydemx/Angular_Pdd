@@ -1,0 +1,11 @@
+<ul class='scrollable-tab'>
+    <li class="scrollable-tab-list" *ngFor="let item of tabs let i=index">
+      <a [class.active]="i===SelectedItem" (click)="onClickItem(i)" href="#">{{item.item}}</a>
+      <span class="scrollable-tab-list-indicator" *ngIf="i===SelectedItem else elseTemp" >
+
+      </span>
+    </li>
+    <ng-template #elseTemp>
+      <!-- <span>hello</span> -->
+    </ng-template>
+  </ul>
