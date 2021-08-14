@@ -1,0 +1,40 @@
+.image-slider
+    position: relative
+    overflow: hidden
+
+    &-img
+        display: flex
+        overflow-x: scroll
+        scroll-behavior: smooth
+        -webkit-overflow-scrolling: touch
+        scroll-snap-type: x mandatory
+
+        >img
+            width: 100%
+            scroll-snap-align: start
+            
+
+    &-nav
+        position: absolute
+        bottom: 0
+        width: 100%
+        opacity: 0.5
+        color: #fff
+        background-color: #000  
+        display: flex
+        justify-content: flex-end
+        align-items: stretch
+
+        &-button
+            display: button 
+            width: 10px
+            height: 10px
+            background-color: #fff
+            text-decoration: none
+            border-radius: 50%
+            margin: 5px
+
+
+            &-select
+                background-color: red
+            

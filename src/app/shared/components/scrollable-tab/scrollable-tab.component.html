@@ -1,0 +1,17 @@
+<ul class='scrollable-tab' [ngStyle]="{backgroundColor:backgroundColor}">
+    <li class="scrollable-tab-list" *ngFor="let item of tabs let i=index">
+      <a [ngStyle]="{color: i===SelectedItem? titleActiveColor:titleColor}" (click)="onClickItem(i)">{{item.item}}</a>
+       <!-- [class.active]="i===SelectedItem"  -->
+      <span class="scrollable-tab-list-indicator" 
+        [ngStyle]="{backgroundColor:indicatorColor}"
+        *ngIf="i===SelectedItem else elseTemp" >
+      </span>
+    </li>
+    <ng-template #elseTemp>
+      <!-- <span>hello</span> -->
+     
+    </ng-template>
+  </ul>
+
+  <ng-content></ng-content>
+

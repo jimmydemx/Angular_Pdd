@@ -1,0 +1,26 @@
+.scrollable-tab
+    display: flex
+    overflow-x: auto
+    -webkit-overflow-scrolling: touch
+
+    &-list
+        list-style: none
+        margin: 0 5px
+        white-space: nowrap
+        display: flex
+        flex-direction: column
+
+        >a
+            text-decoration: none
+
+        .active
+            color: red
+        &-indicator
+            // background-color: brown
+            height: 2px
+            width: 2rem
+            margin-top: 2px
+            align-self: center
+
+::-webkit-scrollbar
+    display: none

@@ -1,0 +1,12 @@
+<app-scrollable-tab [tabs]='tabs' 
+(tabSelected)="onSelectTab($event)"
+[backgroundColor]="scrollableTabBgColor"
+titleColor='#fff'
+[indicatorColor]="'yellow'"
+>
+<!-- <div>hello</div> -->
+</app-scrollable-tab>
+
+<router-outlet></router-outlet>
+
+

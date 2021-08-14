@@ -1,0 +1,27 @@
+<!-- <input type="text" 
+[value]="username" 
+(input)='username=$any($event.target).value'>
+
+<span>你好 {{username}}</span> -->
+
+<!-- <input type="text" [(ngModel)]="username">
+<span>你好 {{username}}</span>
+
+{{result}}
+<button (click)="Onclick()">click here</button> -->
+
+
+<div class="horizontal-grid" 
+[ngStyle]="{'grid-template-rows':templateRows,
+ 'grid-template-columns':templateColumns}"
+ (scroll)="onScroll($event)"
+ >
+<ng-content select="[appGridItem]"></ng-content>
+
+</div>
+
+<div class="underline" *ngIf='scrollable' 
+[ngStyle]="{'margin':sliderMargin}">
+    <div class="highlight"></div>
+</div>
+
