@@ -1,6 +1,11 @@
-import { Component, Inject, Injectable, Injector, OnInit } from '@angular/core';
+import { Component, Inject, Injectable, Injector, NgZone, OnInit, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Channel, ImageSlider } from 'src/app/shared/components';
+import { fromEvent, Observable, Subscription } from 'rxjs';
+import { token } from '../../services';
+import { HomeService } from '../../services/home.service';
+import {filter, map,switchMap,tap} from 'rxjs/operators'
+import { Ad,Products } from 'src/app/shared/domain';
+
 
 @Injectable()
 class Product {
@@ -25,99 +30,54 @@ class PurchaseOrder{
 })
 export class HomeDetailComponent implements OnInit {
 
-  selectedtabLink:string | null='';
+
+  // count down
+  startDate=new Date(2019,6,1);
+  futureDate= new Date(2019,6,2)
+
+
+
+  //
+
+  selectedtabLink$!:Observable<string |null> ;
+
   date=new Date();
   username='123';
-  imageSliders:ImageSlider[]=[{
-    imgUrl:"https://p1.meituan.net/codeman/826a5ed09dab49af658c34624d75491861404.jpg",
-    link:"",
-      caption:"",
-  },{
- imgUrl: "https://p1.meituan.net/travelcube/01d2ab1efac6e2b7adcfcdf57b8cb5481085686.png",
-    link:"",
-    caption:""
-  },{
-    imgUrl: "https://p0.meituan.net/codeman/a97baf515235f4c5a2b1323a741e577185048.jpg",
-    link:"",
-    caption:""
-  }
-]
+  imageSliders=this.service.getImageSliders()
+  // ElementRef是一个class
+  @ViewChild('timeRef',{static:true}) timeRef!:ElementRef;
+  // @ViewChild('inputRef',{static:true}) inputRef!:ElementRef;
 
-// channels
-channels:Channel[]=[
-  {
-    id:1,
-    title:'限时秒杀',
-    icon:'assets/icons/mianxingdiannao.svg',
-    link:'hot'
-  },
-  {
-    id:2,
-    title:'其它',
-    icon:'assets/icons/mianxinggouwu.svg',
-    link:'hot'
-  },
-  {
-    id:3,
-    title:'限时秒杀',
-    icon:'assets/icons/mianxingkefu.svg',
-    link:'hot'
-  },
-  {
-    id:4,
-    title:'限时秒杀',
-    icon:'assets/icons/mianxingmima.svg',
-    link:'hot'
-  },
-  {
-    id:5,
-    title:'限时秒杀',
-    icon:'assets/icons/xianxinggongzuo.svg',
-    link:'hot'
-  },
-  {
-    id:6,
-    title:'限时秒杀',
-    icon:'assets/icons/xianxinggongzuo.svg',
-    link:'hot'
-  },
-  {
-    id:7,
-    title:'限时秒杀',
-    icon:'assets/icons/xianxinggongzuo.svg',
-    link:'hot'
-  },
-  {
-    id:8,
-    title:'限时秒杀',
-    icon:'assets/icons/xianxinggongzuo.svg',
-    link:'hot'
-  },
-  {
-    id:9,
-    title:'限时秒杀',
-    icon:'assets/icons/xianxinggongzuo.svg',
-    link:'hot'
-  },
-  {
-    id:10,
-    title:'限时秒杀',
-    icon:'assets/icons/xianxinggongzuo.svg',
-    link:'hot'
-  },
-  {
-    id:11,
-    title:'限时秒杀',
-    icon:'assets/icons/xianxinggongzuo.svg',
-    link:'hot'
-  },
-]
+  _time:number=0;
+  public get time(){
+
+    return this._time
+  }
+
+  // channels
+  channels=this.service.getChannels()
+  sub!:Subscription
+
+
+  ad$!:Observable<any>
+
+  products$!:Observable<any>
 
   
-  constructor(private route: ActivatedRoute) { }
+  constructor(private route: ActivatedRoute, 
+    private service:HomeService,
+    private ngZone:NgZone,
+    private cd:ChangeDetectorRef
+    ) { }
 
   ngOnInit() {
+    // fromEvent return a Observable
+    // fromEvent(this.inputRef.nativeElement,'input').subscribe((ev:any)=>{
+    //   console.log(ev.target.value)
+    // })
 
+
+    // injectors
       const injector=Injector.create({
         providers:[
           {
@@ -130,22 +90,64 @@ channels:Channel[]=[
             provide: PurchaseOrder,
             useClass:PurchaseOrder,
             deps:[Product]
+          },{
+            provide:token,
+            useValue:"http://localhost:4200"
+
           }
         ]
       })  
 
       console.log("injector",injector.get(Product))
+      console.log("token",injector.get(token))
 
+      // filter（params.has）过滤有tabLink的params{tabLink:xxx}
+      this.selectedtabLink$=this.route.paramMap.pipe(filter(params=>params.has('tabLink')),
+      map(params=>params.get("tabLink")),map(
+          params=>{
+            if(typeof params==="string"){
+            this.ad$=this.service.getAdbyTab(params).pipe(map(val=>val.data),tap(val=>console.log(val)))
+            this.products$=this.service.getProductsbyTab(params).pipe(map(val=>val.data.goodsData),tap(val=>console.log(val)))
+            }
+            return params
+          }
+        )
+      )
 
-      this.route.paramMap.subscribe(params=>{
-        console.log("路径参数", params)
-      this.selectedtabLink=params.get('tabLink')
+      // this.route.paramMap.subscribe(params=>{
+      //   console.log("路径参数", params)
+      // this.selectedtabLink=params.get('tabLink')
       
-      this.route.queryParamMap.subscribe(params=>{
+      this.sub=this.route.queryParamMap.subscribe(params=>{
         console.log("查询参数",params)
       })
 
+      //this.ad$=this.service.getAdbyTab(this.selectedtabLink).pipe(tap(val=>console.log(val)))
+
+    
+  }
+
+  ngAfterViewChecked():void{
+    this.ngZone.runOutsideAngular(()=>{
+      setInterval(()=>{
+        this.timeRef.nativeElement.innerText=Date.now()
+        
+      },100);
+
     })
+
+
+  }
+
+  ngOnDestroy():void{
+    this.sub.unsubscribe();
+
   }
 
 }
+function fomatDate(arg0: number, arg1: string, arg2: string): any {
+  throw new Error('Function not implemented.');
+}
+
+
+

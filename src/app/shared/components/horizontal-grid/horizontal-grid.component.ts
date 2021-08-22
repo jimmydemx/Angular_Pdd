@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Output,EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, Output,EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { Emoji,Confirmable } from '../../decorators';
 
 
@@ -13,7 +13,8 @@ export interface Channel{
 @Component({
   selector: 'app-horizontal-grid',
   templateUrl: './horizontal-grid.component.html',
-  styleUrls: ['./horizontal-grid.component.sass']
+  styleUrls: ['./horizontal-grid.component.sass'],
+  changeDetection:ChangeDetectionStrategy.OnPush
 })
 export class HorizontalGridComponent implements OnInit {
 

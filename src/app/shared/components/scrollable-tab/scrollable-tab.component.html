@@ -4,7 +4,7 @@
        <!-- [class.active]="i===SelectedItem"  -->
       <span class="scrollable-tab-list-indicator" 
         [ngStyle]="{backgroundColor:indicatorColor}"
-        *ngIf="i===SelectedItem else elseTemp" >
+        *ngIf="item.link===selectedTabLink else elseTemp" >
       </span>
     </li>
     <ng-template #elseTemp>

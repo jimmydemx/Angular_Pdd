@@ -1,0 +1,29 @@
+.product-card
+    padding: 0 0.5rem
+    background-color: white 
+    display: grid
+    grid-template-columns: 10rem 1fr
+    grid-template-rows: 3rem 1fr 1rem 2rem
+    grid-gap: 5px
+    grid-template-areas: 'image title' 'image .' 'image tags' 'image price'
+    place-content: stretch
+    place-items: stretch  
+
+    &-image
+        grid-area: image
+        object-fit: contain
+        width: 9rem
+        height: 9rem
+
+
+    &-title
+        grid-area: title
+
+
+    &-tags
+        grid-area: tags
+
+    &-price
+        grid-area: price     
+        color: red      
+

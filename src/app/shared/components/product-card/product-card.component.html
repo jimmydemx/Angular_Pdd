@@ -1,0 +1,9 @@
+<div class="product-card">
+  <img [src]="product.img" alt="" class="product-card-image">
+  <div class="product-card-title">{{product.name}}</div>
+  <div class="product-card-tags">
+    <span *ngFor='let tag of product.tags'>{{product.isHave}}</span>
+
+  </div>
+  <div class="product-card-price">${{product.price}}</div>
+</div>

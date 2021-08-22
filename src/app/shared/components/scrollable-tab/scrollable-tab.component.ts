@@ -3,7 +3,8 @@ import { Component,
   Input,
   Output,EventEmitter,
   SimpleChange, 
-  OnChanges } from '@angular/core';
+  OnChanges, 
+  ChangeDetectionStrategy} from '@angular/core';
 
 export interface Tabs{
   id:number;
@@ -15,16 +16,18 @@ export interface Tabs{
 @Component({
   selector: 'app-scrollable-tab',
   templateUrl: './scrollable-tab.component.html',
-  styleUrls: ['./scrollable-tab.component.sass']
+  styleUrls: ['./scrollable-tab.component.sass'],
+  changeDetection:ChangeDetectionStrategy.OnPush
 })
 export class ScrollableTabComponent implements OnInit {
 
   /* data */
   
 
-  SelectedItem=-1;
 
-  @Input() tabs:Tabs[]=[];
+  SelectedItem:number=0;
+  @Input() selectedTabLink:string | null ='';
+  @Input() tabs:Tabs[]| null=[];
   @Input() backgroundColor="#fff";
   @Input() titleActiveColor='yellow';
   @Input() titleColor="blue";
@@ -36,7 +39,10 @@ export class ScrollableTabComponent implements OnInit {
   */
   onClickItem(index:number){
     this.SelectedItem=index
+    if(this.tabs){
+
     this.tabSelected.emit(this.tabs[this.SelectedItem])
+    }
      
   
   }

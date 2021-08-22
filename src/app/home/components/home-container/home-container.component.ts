@@ -1,8 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
-import { Channel } from 'src/app/shared/components/horizontal-grid';
-import { ImageSlider, ImageSliderComponent } from 'src/app/shared/components/image-slider';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Observable, of } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+import { ImageSliderComponent } from 'src/app/shared/components/image-slider';
 import { Tabs } from 'src/app/shared/components/scrollable-tab';
+import { HomeService, token } from '../../services';
 
 @Component({
   selector: 'app-home-container',
@@ -10,15 +12,19 @@ import { Tabs } from 'src/app/shared/components/scrollable-tab';
   styleUrls: ['./home-container.component.sass']
 })
 export class HomeContainerComponent implements OnInit {
+
   
   
-  constructor(private router: Router){
+  constructor(private router: Router,
+    private service: HomeService,
+    @Inject(token) private baseUrl:string,
+    private route: ActivatedRoute
+   ){
 
   }
+  //  
   
-  ngOnInit(): void {
-    
-  }
+  
 
    /* data */
    title = 'pdd';
@@ -26,140 +32,15 @@ export class HomeContainerComponent implements OnInit {
    SelectedItem=-1;
  
    scrollableTabBgColor="red";
+
+   selectedTabLink$! :Observable<string>
  
    username='123';
  
-   tabs:Tabs[]=[{
-     id:1,
-     item:"Men",
-     link:"Men"
-   },{
-      id:2,
-     item:"Woman",
-     link:"Woman"
-   },{
-     id:3,
-     item:"Mobile",
-     link:"Mobile"
-   },{
-     id:4,
-     item:"Clothes",
-     link:"Clothes"
-   },{
-     id:5,
-     item:"Children",
-     link:"Children"
-   },{
-     id:6,
-     item:"Baby",
-     link:"Baby"
-   },{
-     id:7,
-     item:"Accesories",
-     link:"Accesories"
-   },{
-     id:8,
-     item:"Books",
-     link:"Books"
-   },{
-     id:9,
-     item:"Perfume",
-     link:"Perfume"
-   },{
-     id:10,
-     item:"Tickets",
-     link:"Tickets"
-   },{
-     id:11,
-     item:"Coupons",
-     link:"Coupons"
-   },
-   ];
+   tabs$!:Observable<Tabs[]>;
  
-   imageSliders:ImageSlider[]=[{
-     imgUrl:"https://p1.meituan.net/codeman/826a5ed09dab49af658c34624d75491861404.jpg",
-     link:"",
-       caption:"",
-   },{
-  imgUrl: "https://p1.meituan.net/travelcube/01d2ab1efac6e2b7adcfcdf57b8cb5481085686.png",
-     link:"",
-     caption:""
-   },{
-     imgUrl: "https://p0.meituan.net/codeman/a97baf515235f4c5a2b1323a741e577185048.jpg",
-     link:"",
-     caption:""
-   }
- ]
  
- // channels
- channels:Channel[]=[
-   {
-     id:1,
-     title:'限时秒杀',
-     icon:'assets/icons/mianxingdiannao.svg',
-     link:'hot'
-   },
-   {
-     id:2,
-     title:'其它',
-     icon:'assets/icons/mianxinggouwu.svg',
-     link:'hot'
-   },
-   {
-     id:3,
-     title:'限时秒杀',
-     icon:'assets/icons/mianxingkefu.svg',
-     link:'hot'
-   },
-   {
-     id:4,
-     title:'限时秒杀',
-     icon:'assets/icons/mianxingmima.svg',
-     link:'hot'
-   },
-   {
-     id:5,
-     title:'限时秒杀',
-     icon:'assets/icons/xianxinggongzuo.svg',
-     link:'hot'
-   },
-   {
-     id:6,
-     title:'限时秒杀',
-     icon:'assets/icons/xianxinggongzuo.svg',
-     link:'hot'
-   },
-   {
-     id:7,
-     title:'限时秒杀',
-     icon:'assets/icons/xianxinggongzuo.svg',
-     link:'hot'
-   },
-   {
-     id:8,
-     title:'限时秒杀',
-     icon:'assets/icons/xianxinggongzuo.svg',
-     link:'hot'
-   },
-   {
-     id:9,
-     title:'限时秒杀',
-     icon:'assets/icons/xianxinggongzuo.svg',
-     link:'hot'
-   },
-   {
-     id:10,
-     title:'限时秒杀',
-     icon:'assets/icons/xianxinggongzuo.svg',
-     link:'hot'
-   },
-   {
-     id:11,
-     title:'限时秒杀',
-     icon:'assets/icons/xianxinggongzuo.svg',
-     link:'hot'
-   },
- ]
+  
  
  @ViewChild ('imageSlider') imgSlider!: ImageSliderComponent
    /* 
@@ -177,8 +58,39 @@ export class HomeContainerComponent implements OnInit {
   /* 
      life cycle
   */
+ 
   ngAfterViewInit(){
  
    console.log("sliders",this.imgSlider);
+  console.log("token baseUrl",this.baseUrl)
+  
   }
+
+  ngOnInit(): void {
+
+    this.tabs$= this.service.getTabs()
+    if(this.route.firstChild){
+      this.selectedTabLink$=this.route.firstChild.paramMap.pipe(
+
+        filter(params=> params.has('tabLink')),
+        
+        map(params=>{
+          var p=params.get('tabLink')
+          if(p) return p
+          else return "error find fist child"
+        })
+        
+    ) 
+      
+    }
+    
+  //   this.service.getTabs().subscribe(tabs=>{
+  //     this.tabs=tabs
+  //    console.log("tabs",tabs)}
+  //     );
+  //   console.log("ppppppp",this.service.tabs)
+    
+  // }
+  }
+
 }

@@ -1,12 +1,14 @@
-<app-scrollable-tab [tabs]='tabs' 
+<app-scrollable-tab [tabs]='tabs$ | async'  
 (tabSelected)="onSelectTab($event)"
 [backgroundColor]="scrollableTabBgColor"
 titleColor='#fff'
 [indicatorColor]="'yellow'"
+[selectedTabLink]='selectedTabLink$ | async'
 >
 <!-- <div>hello</div> -->
 </app-scrollable-tab>
 
+<div class="home-container-main">
 <router-outlet></router-outlet>
 
-
+</div>

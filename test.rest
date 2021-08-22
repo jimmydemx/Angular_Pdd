@@ -1,0 +1,10 @@
+
+@baseUrl=https://www.fastmock.site/mock/ef72daaf7b22e873db833874580ce9bc/pdd
+
+GET {{baseUrl}}/banner HTTP/1.1
+
+###
+
+GET {{baseUrl}}/tabs HTTP/1.1
+
+###
